@@ -4,7 +4,7 @@ const bookingController = require('../controller/bookings');
 const { verifyToken, verifyUserToken } = require('../controller/Token');
 
 BookingRouter.get('/userbookings/:username', verifyUserToken, bookingController.getBookings)
-BookingRouter.post('/newBooking', bookingController.newBooking)
+BookingRouter.post('/newBooking',verifyUserToken, bookingController.newBooking)
 BookingRouter.get('/timeslot/:Hall/:Date/:Timeslot/:Username', bookingController.TimeSlot)
 BookingRouter.get('/datefilter/:startDate/:EndDate', bookingController.DateFilter)
 BookingRouter.get('/events/:username', bookingController.eventsShow)

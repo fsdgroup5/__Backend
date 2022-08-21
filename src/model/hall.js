@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var NewHallSchema = new Schema({
-    HallName: { type: String, unique: true },
+    HallName: String,
     Seats: Number,
     Location: String,
     Image: String

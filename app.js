@@ -26,7 +26,7 @@ app.use('/api/halls/', HallRouter);
 app.use('/api/booking', BookingRouter);
 app.use('/api/adminLogin', AdminLoginRouter);
 app.use('/api/userLogin', UserLoginRouter);
-app.use('/api/employee', employeeRoute)
+app.use('/api/employee',verifyToken, employeeRoute)
 
 
 const PORT = (process.env.PORT || 3000);

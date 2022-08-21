@@ -171,38 +171,43 @@ const RemoveBooking = (req, res) => {
   id = req.params.id;
   BookingData.findOne({ "_id": id }).then((data) => {
     UserName = data.UserName
-    today=new Date().toISOString().substring(0, 10);
-    if(today<data.DateOfBooking){
+    today = new Date().toISOString().substring(0, 10);
+    if (today < data.DateOfBooking) {
       userData.findOne({ "username": UserName }).then((data1) => {
         mailId = data1.email
         async function main() {
-        transporter 
+          remove_data();
+          transporter
           let info = await transporter.sendMail({
-  
+
             from: 'fsdcgroup5@gmail.com',
             to: mailId,
             subject: "ICT Hall Booking Cancelled!!",
             html: "<h3>Hello <b style='text-transform: uppercase'>" + UserName + "</b> Your Booking Has Been cancelled</h3> <br><b>Booking Date : " + data.DateOfBooking + "</b> <br> <b>HallName : " + data.HallName + "</b> <br> <b>TimeSlot : " + data.TimeSlot + "</b>",
-  
+
           });
         }
-  
+
         main().catch(console.error);
       })
     }
-    
+    else {
+      remove_data()
+    }
+
 
   });
 
-
-  BookingData.findByIdAndDelete({ "_id": id })
-    .then(() => {
-      res.send();
-    })
-  eventdata.findByIdAndDelete({ "_id": id })
-    .then(() => {
-      res.send();
-    })
+  function remove_data() {
+    BookingData.findByIdAndDelete({ "_id": id })
+      .then(() => {
+        res.send();
+      })
+    eventdata.findByIdAndDelete({ "_id": id })
+      .then(() => {
+        res.send();
+      })
+  }
 }
 
 module.exports = {

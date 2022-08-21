@@ -2,7 +2,7 @@ const express = require('express');
 const BookingData = require('../model/bookings');
 const eventdata = require('../model/events');
 const nodemailer = require("nodemailer");
-const transporter=require('../controller/nodemailer')
+const transporter = require('../controller/nodemailer')
 
 // Employee model
 let Employee = require('../model/users');
@@ -13,20 +13,20 @@ const newEmployee = (req, res, next) => {
     if (error) {
       return next(error)
     } else {
-    
+
       userMail = data.email;
       async function main() {
         transporter
-  
+
         let info = await transporter.sendMail({
           from: 'fsdcgroup5@gmail.com',
           to: userMail,
-          subject: "Welcome "+data.name+", to ICT Hall Booking Portal ",
-          html: "<h4>New User Account Created</h4><br><h4>Username:"+data.username+"<br>Password:"+data.password+"</h4>",
-  
+          subject: "Welcome " + data.name + ", to ICT Hall Booking Portal ",
+          html: "<h4>New User Account Created</h4><br><h4>Username:" + data.username + "<br>Password:" + data.password + "</h4>",
+
         });
       }
-  
+
       main().catch(console.error);
       res.json(data)
     }
@@ -65,6 +65,24 @@ const updateEmployee = (req, res, next) => {
     if (error) {
       return next(error);
     } else {
+      if (data.username != req.body.username || data.password != req.body.password) {
+        userMail = data.email;
+        async function main() {
+          transporter
+
+          let info = await transporter.sendMail({
+            from: 'fsdcgroup5@gmail.com',
+            to: userMail,
+            subject: data.name + ",Your user login credentials has been updated ",
+            html: "<br><h4>New Username:" + req.body.username + "<br>New Password:" + req.body.password + "</h4>",
+
+          });
+        }
+
+        main().catch(console.error);
+      }
+
+
       BookingData.updateMany({ "UserName": data.username },
         {
           $set: {
@@ -74,7 +92,7 @@ const updateEmployee = (req, res, next) => {
         .then(function () {
           res.send();
         })
-        eventdata.updateMany({ "username": data.username },
+      eventdata.updateMany({ "username": data.username },
         {
           $set: {
             "username": req.body.username,
@@ -97,8 +115,8 @@ const removeEmployee = (req, res, next) => {
       return next(error);
     } else {
       username = data.username
-      today=new Date().toISOString().substring(0, 10);
-      BookingData.deleteMany({ "UserName": username ,"DateOfBooking": { $gte: today}}).then(() => {
+      today = new Date().toISOString().substring(0, 10);
+      BookingData.deleteMany({ "UserName": username, "DateOfBooking": { $gte: today } }).then(() => {
         res.send();
       })
       eventdata.deleteMany({ "username": username }).then(() => {
